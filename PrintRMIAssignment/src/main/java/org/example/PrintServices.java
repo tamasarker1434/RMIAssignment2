@@ -29,10 +29,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
             digest.reset();
             digest.update(password.getBytes("utf8"));
             String sha1Pass = String.format("%040x", new BigInteger(1, digest.digest()));
-            System.out.println( "The sha1 of \""+ password + "\" is:");
-            System.out.println( sha1Pass );
             while (resultSet.next()){
-                //System.out.println("user id = "+ resultSet.getString("userid"));
                 if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(sha1Pass))
                     loginReturn = true;
             }

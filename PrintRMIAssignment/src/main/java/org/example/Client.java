@@ -45,7 +45,7 @@ public class Client {
             ShowPrintingMenu();
         }
         else {
-            System.out.println("Enter Wrong Username or Password");
+            System.out.println("Entered Wrong Username or Password");
             ShowLoginMenu();
         }
     }
