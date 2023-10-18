@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 public class PrintServices extends UnicastRemoteObject implements IPrintServices {
 
     public PrintServices() throws RemoteException{
