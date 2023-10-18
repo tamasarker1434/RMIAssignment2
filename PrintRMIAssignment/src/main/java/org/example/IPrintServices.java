@@ -4,7 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IPrintServices extends Remote {
-    //Test Method
+    //Sign in Method
+    public boolean signIn(String userId, String password) throws RemoteException;
     public String echo(String input) throws RemoteException;
     // prints file filename on the specified printer
     public String print(String filename, String printer) throws RemoteException;

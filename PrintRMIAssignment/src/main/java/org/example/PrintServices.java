@@ -1,13 +1,48 @@
 package org.example;
 
+import java.math.BigInteger;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class PrintServices extends UnicastRemoteObject implements IPrintServices {
 
     public PrintServices() throws RemoteException{
         super();
     }
+
+    @Override
+    public boolean signIn(String userId, String password) throws RemoteException {
+
+        boolean loginReturn = false;
+        String url = "jdbc:mysql://localhost:3306/jdbcPrinterDB", username ="root", dbPassword="";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(url,username,dbPassword);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("select * from userprofile");
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            digest.reset();
+            digest.update(password.getBytes("utf8"));
+            String sha1Pass = String.format("%040x", new BigInteger(1, digest.digest()));
+            System.out.println( "The sha1 of \""+ password + "\" is:");
+            System.out.println( sha1Pass );
+            while (resultSet.next()){
+                //System.out.println("user id = "+ resultSet.getString("userid"));
+                if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(sha1Pass))
+                    loginReturn = true;
+            }
+            connection.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return loginReturn;
+    }
+
     @Override
     public String echo(String input) throws RemoteException {
         return "From Server: "+ input;

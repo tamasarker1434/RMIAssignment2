@@ -4,7 +4,13 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.security.MessageDigest;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
+import java.math.BigInteger;
 
 import static java.rmi.Naming.lookup;
 
@@ -28,44 +34,20 @@ public class Client {
         System.out.println("------" + iPrintServices.echo("Server is Connected"));
         ShowLoginMenu();
     }
-    private static boolean UserLogin(String userId, String password){
-        boolean loginReturn = false;
-        if (userId.equals("admin")  && password.equals("123")){
-            loginReturn = true;
-        }
-        return loginReturn;
-    }
     private static void ShowLoginMenu() throws RemoteException {
-        int choice= -1;
-        do {
-                System.out.printf("Select The Menu. %n1. Login.%n2. Sign Up%n0. Exit%n");
-                System.out.printf("Enter Choice :");
-                choice = Integer.parseInt(scannerObj.nextLine());
-                switch (choice){
-                    case 1:
-                        String userId, password ;
-                        System.out.printf("Enter Username = ");
-                        userId = scannerObj.nextLine();
-                        System.out.printf("Enter Password = ");
-                        password = scannerObj.nextLine();
-                        boolean logIn = UserLogin(userId,password);
-                        if (logIn) {
-                            ShowPrintingMenu();
-                        }
-                        else {
-                            System.out.println("Enter Wrong Username or Password");
-                            ShowLoginMenu();
-                        }
-                        break;
-                    case 2:
-                        System.out.println("Choice : Signup");
-                        break;
-                    default:
-                        if (choice!=0)
-                            System.out.println("Enter Valid Choice!!!");
-                        break;
-                }
-            } while (choice != 0);
+        String userId, password ;
+        System.out.printf("Enter Username = ");
+        userId = scannerObj.nextLine();
+        System.out.printf("Enter Password = ");
+        password = scannerObj.nextLine();
+        boolean logIn = iPrintServices.signIn(userId, password);
+        if (logIn) {
+            ShowPrintingMenu();
+        }
+        else {
+            System.out.println("Enter Wrong Username or Password");
+            ShowLoginMenu();
+        }
     }
     private static void ShowPrintingMenu() throws RemoteException {
         int choice= -1;
