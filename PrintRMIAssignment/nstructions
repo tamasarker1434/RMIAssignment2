@@ -1,0 +1,5 @@
+to direct use of this project:
+1. create database named jdbcPrinterDB
+2. use xampp server and rename the port no in PrintService.java at signIn method to the url path. current port is 3306
+3. on url (in PrintService.java at signIn method) provide the username and database password, current username is root and dbpassword is empty strin.
+4. create a table in DB named userprofile with min 2 column as userid(varchar(20) and password(varchar(100))
