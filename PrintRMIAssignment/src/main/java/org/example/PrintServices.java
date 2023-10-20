@@ -1,9 +1,11 @@
 package org.example;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,21 +18,25 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
 
     @Override
     public boolean signIn(String userId, String password) throws RemoteException {
-
         boolean loginReturn = false;
         String url = "jdbc:mysql://localhost:3306/jdbcPrinterDB", username ="root", dbPassword="";
         try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] sha256Pass = digest.digest(password.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : sha256Pass) {
+                hexString.append(String.format("%02x", b));
+            }
+            System.out.println("Password from client=" + hexString.toString());
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url,username,dbPassword);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from userprofile");
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            digest.reset();
-            digest.update(password.getBytes("utf8"));
-            String sha1Pass = String.format("%040x", new BigInteger(1, digest.digest()));
             while (resultSet.next()){
-                if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(sha1Pass))
+                if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(hexString.toString())) {
+                    System.out.println("Password from DB=" + resultSet.getString("password"));
                     loginReturn = true;
+                }
             }
             connection.close();
         } catch (Exception e) {
