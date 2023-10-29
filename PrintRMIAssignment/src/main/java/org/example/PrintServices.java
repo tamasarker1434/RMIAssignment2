@@ -1,24 +1,42 @@
 package org.example;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-public class PrintServices extends UnicastRemoteObject implements IPrintServices {
+import java.util.HashMap;
+import java.util.Random;
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
+public class PrintServices extends UnicastRemoteObject implements IPrintServices {
+    HashMap<String,Long> sessionHashMap = new HashMap<String,Long>();
     public PrintServices() throws RemoteException{
         super();
     }
 
+    private boolean sessionCheck(String sessionId){
+        if (sessionHashMap.containsKey(sessionId)){
+            long timeNano = System.nanoTime() - sessionHashMap.get(sessionId);
+            long timeSec = TimeUnit.SECONDS.convert( timeNano,TimeUnit.NANOSECONDS);
+            System.out.println("Time Diff= " + timeSec);
+            if (timeSec <= 10) {
+                System.out.println("Reply from server for SessionId = " + sessionId);
+                sessionHashMap.put(sessionId,System.nanoTime());
+                return true;
+            }
+            else {
+                sessionHashMap.remove(sessionId);
+            }
+        }
+        return false;
+    }
     @Override
-    public boolean signIn(String userId, String password) throws RemoteException {
-        boolean loginReturn = false;
+    public String signIn(String userId, String password) throws RemoteException {
+        String session = null;
         String url = "jdbc:mysql://localhost:3306/jdbcPrinterDB", username ="root", dbPassword="";
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -27,22 +45,24 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
             for (byte b : sha256Pass) {
                 hexString.append(String.format("%02x", b));
             }
-            System.out.println("Password from client=" + hexString.toString());
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url,username,dbPassword);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from userprofile");
             while (resultSet.next()){
                 if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(hexString.toString())) {
-                    System.out.println("Password from DB=" + resultSet.getString("password"));
-                    loginReturn = true;
+                    Random random = new Random();
+                    int sessionId = random.nextInt();
+                    session =Integer.toString(sessionId);
+                    sessionHashMap.put(session,System.nanoTime());
+                    System.out.println(sessionHashMap.get(session));
                 }
             }
             connection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return loginReturn;
+        return session;
     }
 
     @Override
@@ -51,47 +71,74 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     }
 
     @Override
-    public String print(String filename, String printer) throws RemoteException {
-        return "Filename:" + filename +" Prints on printer:" + printer ;
+    public String print(String filename, String printer, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String queue(String printer) throws RemoteException {
-        return "Printing Queue for the printer:" + printer;
+    public String queue(String printer, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String topQueue(String printer, int job) throws RemoteException {
-        return "Move the Job no:" + job + " of printer no:" + printer +" to the top.";
+    public String topQueue(String printer, int job, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String start() throws RemoteException {
-        return "Start The Print Server.";
+    public String start(String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String stop() throws RemoteException {
-    return "Stop the Print Server";
+    public String stop(String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String restart() throws RemoteException {
-    return "Restart the Print Server";
+    public String restart(String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String status(String printer) throws RemoteException {
-        return "Showing the status of the printer to the user";
+    public String status(String printer, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String readConfig(String parameter) throws RemoteException {
-        return "Server Parameter:" + parameter;
+    public String readConfig(String parameter, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 
     @Override
-    public String setConfig(String parameter, String value) throws RemoteException {
-        return "Set theParameter:"+parameter + " with value:" + value;
+    public String setConfig(String parameter, String value, String sessionId) throws RemoteException {
+        if (sessionCheck(sessionId))
+            return "Response from server!!!" ;
+        else
+            return null;
     }
 }

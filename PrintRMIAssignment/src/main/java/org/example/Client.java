@@ -25,7 +25,7 @@ public class Client {
     }
 
     public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
-        System.out.println("------" + iPrintServices.echo("Server is Connected"));
+        System.out.println("------" + iPrintServices.echo("Server is Connected------"));
         ShowLoginMenu();
     }
     private static void ShowLoginMenu() throws RemoteException {
@@ -34,68 +34,112 @@ public class Client {
         userId = scannerObj.nextLine();
         System.out.printf("Enter Password = ");
         password = scannerObj.nextLine();
-        boolean logIn = iPrintServices.signIn(userId, password);
-        if (logIn) {
-            ShowPrintingMenu();
+        String sessionId = iPrintServices.signIn(userId, password);
+        if (sessionId != null) {
+            ShowPrintingMenu(sessionId);
         }
         else {
             System.out.println("Entered Wrong Username or Password");
             ShowLoginMenu();
         }
     }
-    private static void ShowPrintingMenu() throws RemoteException {
+    private static void ShowPrintingMenu(String sessionId) throws RemoteException {
         int choice= -1;
+        String response;
         do {
             System.out.printf("%n1.Print%n2.Queue%n3.Top Queue%n4.Start%n5.Stop%n6.Restart%n7.Status%n8.Read Config%n9.Set Config%n0.Logout%n");
             System.out.printf("Enter Choice :");
-            String fileName, printerName, parameter;
-            int jobNo;
             choice = Integer.parseInt(scannerObj.nextLine());
             switch (choice){
                 case 1:
-                    System.out.printf("File Name :");
-                    fileName = scannerObj.nextLine();
-                    System.out.printf("Printer Name :");
-                    printerName = scannerObj.nextLine();
-                    System.out.println(iPrintServices.print(fileName,printerName));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.print("fileName","printerName",sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 2:
-                    System.out.printf("Printer Name :");
-                    printerName = scannerObj.nextLine();
-                    System.out.println(iPrintServices.queue(printerName));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.queue("printerName",sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 3:
-                    System.out.printf("Printer Name :");
-                    printerName = scannerObj.nextLine();
-                    System.out.printf("Job No :");
-                    jobNo = Integer.parseInt(scannerObj.nextLine());
-                    System.out.println(iPrintServices.topQueue(printerName,jobNo));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.topQueue("printerName",1,sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 4:
-                    System.out.println(iPrintServices.start());
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.start(sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 5:
-                    System.out.println(iPrintServices.stop());
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.stop(sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 6:
-                    System.out.println(iPrintServices.restart());
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.restart(sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 7:
-                    System.out.printf("Printer Name :");
-                    printerName = scannerObj.nextLine();
-                    System.out.println(iPrintServices.status(printerName));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.status("printer",sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 8:
-                    System.out.printf("Parameter :");
-                    parameter = scannerObj.nextLine();
-                    System.out.println(iPrintServices.readConfig(parameter));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.readConfig("parameter",sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 case 9:
-                    System.out.printf("Parameter :");
-                    parameter = scannerObj.nextLine();
-                    System.out.printf("Value :");
-                    String value = scannerObj.nextLine();
-                    System.out.println(iPrintServices.setConfig(parameter,value));
+                    System.out.println("Client send request with SessionId= "+ sessionId);
+                    response = iPrintServices.setConfig("parameter","value",sessionId);
+                    if(response == null) {
+                        choice = 0;
+                        System.out.println("Unauthorised User!!!");
+                    }
+                    else
+                        System.out.println(response);
                     break;
                 default:
                     if (choice!=0)
