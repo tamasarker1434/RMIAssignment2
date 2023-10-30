@@ -55,7 +55,6 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
                     int sessionId = random.nextInt();
                     session =Integer.toString(sessionId);
                     sessionHashMap.put(session,System.nanoTime());
-                    System.out.println(sessionHashMap.get(session));
                 }
             }
             connection.close();
