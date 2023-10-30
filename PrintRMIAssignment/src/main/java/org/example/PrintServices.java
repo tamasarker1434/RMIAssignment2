@@ -2,7 +2,6 @@ package org.example;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,18 +38,12 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
         String session = null;
         String url = "jdbc:mysql://localhost:3306/jdbcPrinterDB", username ="root", dbPassword="";
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] sha256Pass = digest.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : sha256Pass) {
-                hexString.append(String.format("%02x", b));
-            }
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection(url,username,dbPassword);
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("select * from userprofile");
             while (resultSet.next()){
-                if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(hexString.toString())) {
+                if (resultSet.getString("userid").equals(userId) && resultSet.getString("password").equals(password)) {
                     Random random = new Random();
                     int sessionId = random.nextInt();
                     session =Integer.toString(sessionId);

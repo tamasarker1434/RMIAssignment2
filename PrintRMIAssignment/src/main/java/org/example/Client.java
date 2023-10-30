@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.security.MessageDigest;
 import java.util.Scanner;
 
 import static java.rmi.Naming.lookup;
@@ -34,6 +35,7 @@ public class Client {
         userId = scannerObj.nextLine();
         System.out.printf("Enter Password = ");
         password = scannerObj.nextLine();
+        password = passwordConversion(password);
         String sessionId = iPrintServices.signIn(userId, password);
         if (sessionId != null) {
             ShowPrintingMenu(sessionId);
@@ -42,6 +44,19 @@ public class Client {
             System.out.println("Entered Wrong Username or Password");
             ShowLoginMenu();
         }
+    }
+    private static String passwordConversion(String password){
+        StringBuilder hexString = new StringBuilder();
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] sha256Pass = digest.digest(password.getBytes());
+            for (byte b : sha256Pass) {
+                hexString.append(String.format("%02x", b));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return hexString.toString();
     }
     private static void ShowPrintingMenu(String sessionId) throws RemoteException {
         int choice= -1;
