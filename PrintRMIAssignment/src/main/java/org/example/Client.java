@@ -59,108 +59,108 @@ public class Client {
         return hexString.toString();
     }
     private static void ShowPrintingMenu(String sessionId) throws RemoteException {
-        int choice= -1;
+        String choice= "";
         String response;
         do {
             System.out.printf("%n1.Print%n2.Queue%n3.Top Queue%n4.Start%n5.Stop%n6.Restart%n7.Status%n8.Read Config%n9.Set Config%n0.Logout%n");
             System.out.printf("Enter Choice :");
-            choice = Integer.parseInt(scannerObj.nextLine());
+            choice = scannerObj.nextLine();
             switch (choice){
-                case 1:
-                    System.out.println("Client send request with SessionId= "+ sessionId);
+                case "1":
+                    System.out.println("Client sending request with SessionId= "+ sessionId);
                     response = iPrintServices.print("fileName","printerName",sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 2:
+                case "2":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.queue("printerName",sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 3:
+                case "3":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.topQueue("printerName",1,sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 4:
+                case "4":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.start(sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 5:
+                case "5":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.stop(sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 6:
+                case "6":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.restart(sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 7:
+                case "7":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.status("printer",sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 8:
+                case "8":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.readConfig("parameter",sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
-                case 9:
+                case "9":
                     System.out.println("Client send request with SessionId= "+ sessionId);
                     response = iPrintServices.setConfig("parameter","value",sessionId);
                     if(response == null) {
-                        choice = 0;
+                        choice = "0";
                         System.out.println("Unauthorised User!!!");
                     }
                     else
                         System.out.println(response);
                     break;
                 default:
-                    if (choice!=0)
+                    if (choice!="0")
                         System.out.println("Enter Valid Choice!!!");
                     break;
             }
-        } while (choice != 0);
+        } while (choice != "0");
     }
 }
