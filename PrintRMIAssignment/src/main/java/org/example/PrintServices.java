@@ -65,7 +65,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String print(String filename, String printer, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Print the file= "+ filename+" on printer = " + printer ;
         else
             return null;
     }
@@ -73,7 +73,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String queue(String printer, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Print the queue of the printer = " + printer ;
         else
             return null;
     }
@@ -81,7 +81,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String topQueue(String printer, int job, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Move the Job no = "+ job+ "of printer no= "+printer ;
         else
             return null;
     }
@@ -89,7 +89,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String start(String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Start the printer." ;
         else
             return null;
     }
@@ -97,7 +97,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String stop(String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Stop the printer" ;
         else
             return null;
     }
@@ -105,7 +105,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String restart(String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Restart the Printer" ;
         else
             return null;
     }
@@ -113,7 +113,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String status(String printer, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "The status of the printer no= " + printer ;
         else
             return null;
     }
@@ -121,7 +121,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String readConfig(String parameter, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "The parameter is =" + parameter ;
         else
             return null;
     }
@@ -129,7 +129,7 @@ public class PrintServices extends UnicastRemoteObject implements IPrintServices
     @Override
     public String setConfig(String parameter, String value, String sessionId) throws RemoteException {
         if (sessionCheck(sessionId))
-            return "Response from server!!!" ;
+            return "Set the parameter = " + parameter+" with the value  = " + value ;
         else
             return null;
     }
